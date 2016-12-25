@@ -4,6 +4,9 @@ Taking json data from an export of my google and looking at it
 """
 import json
 import argparse
+import matplotlib.pyplot as plt
+import numpy
+import math
 from os import listdir
 from os.path import isfile, join
 
@@ -33,18 +36,36 @@ for jsonFile in jsonFiles:
                 l = queries[query_text]
                 # The list of timestamps might not exist, even if its been added to the dictionary
                 if l:
-                    queries[query_text] = l.append(timestamps)
+                    queries[query_text] = l + timestamps
                 else:
                     queries[query_text] = timestamps
 
             else:
                 queries[query_text] = timestamps
-            queriesTimeStamps.append(timestamps)
+            queriesTimeStamps = queriesTimeStamps + timestamps
 
-print(queries)
-print(len(queriesTimeStamps))  
+# Plot the time frequency of searching
+conversionToSecs = 1000000
+conversionToDays = 86400000000
+queriesTimeStamps.sort()
+queriesDays = [math.floor(int(timestamp)/conversionToDays) for timestamp in queriesTimeStamps]
+firstSearch = int(min(queriesDays))
+lastSearch = int(max(queriesDays))
+xAxis = numpy.linspace(firstSearch,
+    lastSearch, lastSearch-firstSearch)
 
-#text of search at following:
-#print(data[2]['event'][0]['query']['query_text'])
-#timestamp of query at following:
-#print(data[2]['event'][0]['query']['id'][0]['timestamp_usec'])
+
+yAxis = list()
+last = 0
+for i in range(lastSearch - firstSearch):
+    num = 0
+    for j in range(len(queriesDays) + 1 - last):
+        if (math.floor(queriesDays[j + last])/(firstSearch+i) == 1):
+            num = num + 1
+        else:
+            last = j + last
+            break
+    yAxis.append(num)
+
+plt.bar(xAxis, yAxis)
+plt.show()
