@@ -20,7 +20,10 @@ args = parser.parse_args()
 
 jsonFiles = [f for f in listdir(args.directory) if isfile(join(args.directory, f))]
 
+# queries is a dictionary where each key is a specific search, and
+# each key returns a list of timestamps where that key was searched for
 queries = dict()
+# queriesTimeStamps holds a list of every timestamp from every search
 queriesTimeStamps = list()
 
 for jsonFile in jsonFiles:
@@ -69,3 +72,23 @@ for i in range(lastSearch - firstSearch):
 
 plt.bar(xAxis, yAxis)
 plt.show()
+
+
+# Top searched items
+# I should learn how to use tuples
+topSearches = ["Temp"]
+topSearchesNums = [0]
+for key in queries:
+    numSearches = len(queries[key])
+    for i, num in enumerate(topSearchesNums):
+        if numSearches > num:
+            topSearches.insert(i, key)
+            topSearchesNums.insert(i, numSearches)
+            break
+        if i > 100:
+            break
+
+for i, search in enumerate(topSearches):
+    print(str(i) + ":(" + str(topSearchesNums[i])+ ") " + search)
+    if i > 100:
+        break
