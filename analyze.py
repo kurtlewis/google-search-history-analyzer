@@ -12,9 +12,15 @@ from os.path import isfile, join
 
 #Configure arguments
 parser = argparse.ArgumentParser(
-    description="A Tool to examine a folder containing json data from google's takeout tool")
+    description="A Tool to examine a folder containing json data from google's takeout tool",
+    epilog="If any plots are displayed, they must be closed before the program can complete")
 parser.add_argument("directory", type=str, 
     help="The name of the folder containing json dumps. Typically Takeout/Searches/")
+parser.add_argument("-f", "--frequentSearches", action="store_true",
+    help="Display the most frequently made searches")
+parser.add_argument("-d", "--searchesPerDay", action="store_true",
+    help="Display a graph of how many searches have been made per day")
+
 
 args = parser.parse_args()
 
@@ -48,47 +54,48 @@ for jsonFile in jsonFiles:
             queriesTimeStamps = queriesTimeStamps + timestamps
 
 # Plot the time frequency of searching
-conversionToSecs = 1000000
-conversionToDays = 86400000000
-queriesTimeStamps.sort()
-queriesDays = [math.floor(int(timestamp)/conversionToDays) for timestamp in queriesTimeStamps]
-firstSearch = int(min(queriesDays))
-lastSearch = int(max(queriesDays))
-xAxis = numpy.linspace(firstSearch,
-    lastSearch, lastSearch-firstSearch)
+if args.searchesPerDay:
+    conversionToSecs = 1000000
+    conversionToDays = 86400000000
+    queriesTimeStamps.sort()
+    queriesDays = [math.floor(int(timestamp)/conversionToDays) for timestamp in queriesTimeStamps]
+    firstSearch = int(min(queriesDays))
+    lastSearch = int(max(queriesDays))
+    xAxis = numpy.linspace(firstSearch,
+        lastSearch, lastSearch-firstSearch)
 
 
-yAxis = list()
-last = 0
-for i in range(lastSearch - firstSearch):
-    num = 0
-    for j in range(len(queriesDays) + 1 - last):
-        if (math.floor(queriesDays[j + last])/(firstSearch+i) == 1):
-            num = num + 1
-        else:
-            last = j + last
+    yAxis = list()
+    last = 0
+    for i in range(lastSearch - firstSearch):
+        num = 0
+        for j in range(len(queriesDays) + 1 - last):
+            if (math.floor(queriesDays[j + last])/(firstSearch+i) == 1):
+                num = num + 1
+            else:
+                last = j + last
+                break
+        yAxis.append(num)
+
+    plt.bar(xAxis, yAxis)
+    plt.show()
+
+if args.frequentSearches:
+    # Top searched items
+    # I should learn how to use tuples
+    topSearches = ["Temp"]
+    topSearchesNums = [0]
+    for key in queries:
+        numSearches = len(queries[key])
+        for i, num in enumerate(topSearchesNums):
+            if numSearches > num:
+                topSearches.insert(i, key)
+                topSearchesNums.insert(i, numSearches)
+                break
+            if i == 100:
+                break
+
+    for i, search in enumerate(topSearches):
+        print(str(i) + ":(" + str(topSearchesNums[i])+ ") " + search)
+        if i == 100:
             break
-    yAxis.append(num)
-
-plt.bar(xAxis, yAxis)
-plt.show()
-
-
-# Top searched items
-# I should learn how to use tuples
-topSearches = ["Temp"]
-topSearchesNums = [0]
-for key in queries:
-    numSearches = len(queries[key])
-    for i, num in enumerate(topSearchesNums):
-        if numSearches > num:
-            topSearches.insert(i, key)
-            topSearchesNums.insert(i, numSearches)
-            break
-        if i > 100:
-            break
-
-for i, search in enumerate(topSearches):
-    print(str(i) + ":(" + str(topSearchesNums[i])+ ") " + search)
-    if i > 100:
-        break
