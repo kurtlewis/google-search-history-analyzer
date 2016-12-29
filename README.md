@@ -9,3 +9,6 @@ I wrote a quick script to look at different details of Google search histroy
 Current dependencies include:
 - matplotlib
 - numpy
+
+### A note
+Early commits refer to files in a directory, because this project was originally part of my [quick and dirty repo](https://github.com/kurtlewis/quickanddirty).
