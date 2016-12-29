@@ -7,6 +7,7 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy
 import math
+import time
 from os import listdir
 from os.path import isfile, join
 
@@ -85,9 +86,13 @@ if args.searchesPerDay or args.searchesPerDayOfWeek:
         plt.show()
 
     if args.searchesPerDayOfWeek:
+        searchesOnDays = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
+        for stamp in queriesTimeStamps:
+            day = time.strftime("%A", time.localtime(int(stamp)))
+            searchesOnDays[day] = searchesOnDays[day] + 1
         xTicksLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        yAxis = list(searchesOnDays.values())
         xAxis = [1,2,3,4,5,6,7]
-        yAxis = [1,2,3,4,5,6,7]
         plt.bar(xAxis, yAxis)
         plt.xticks([1,2,3,4,5,6,7], xTicksLabels)
         plt.show()
