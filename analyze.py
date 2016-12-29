@@ -85,11 +85,11 @@ if args.searchesPerDay or args.searchesPerDayOfWeek:
         plt.show()
 
     if args.searchesPerDayOfWeek:
-        xTicks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        xTicksLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         xAxis = [1,2,3,4,5,6,7]
         yAxis = [1,2,3,4,5,6,7]
         plt.bar(xAxis, yAxis)
-        plt.xticks([1,2,3,4,5,6,7], xTicks)
+        plt.xticks([1,2,3,4,5,6,7], xTicksLabels)
         plt.show()
 
 if args.frequentSearches:
