@@ -25,8 +25,8 @@ queries = dict()
 # QueriesTimeStamps holds a list of every timestamp from every search
 queriesTimeStamps = list()
 # Number of plots
-numPlots = 2
-numPlotsX = 2
+numPlots = 3
+numPlotsX = 3
 numPlotsY = 1
 currentPlot = 1
 
@@ -67,7 +67,7 @@ for jsonFile in jsonFiles:
             queriesTimeStamps = queriesTimeStamps + timestamps
 
 #
-# Plot the time frequency of searching
+# Plot the time frequency of searching in searches per day
 #
 plt.subplot(numPlotsX,numPlotsY, currentPlot)
 currentPlot = currentPlot + 1
@@ -77,12 +77,12 @@ queriesDays = [math.floor(int(timestamp)/CONVERSION_TO_DAYS) for timestamp in qu
 firstSearch = int(min(queriesDays))
 lastSearch = int(max(queriesDays))
 
-xAxis = numpy.linspace(firstSearch, lastSearch, lastSearch-firstSearch)
+totalNumOfDays = lastSearch - firstSearch
+xAxis = numpy.linspace(firstSearch, lastSearch, totalNumOfDays)
+searchesPerDay = list()
 
-
-yAxis = list()
 last = 0
-for i in range(lastSearch - firstSearch):
+for i in range(totalNumOfDays):
     num = 0
     for j in range(len(queriesDays) + 1 - last):
         if (math.floor(queriesDays[j + last])/(firstSearch+i) == 1):
@@ -90,11 +90,28 @@ for i in range(lastSearch - firstSearch):
         else:
             last = j + last
             break
-    yAxis.append(num)
+    searchesPerDay.append(num)
 
 
-totalNumOfDays = len(yAxis)
-plt.bar(xAxis, yAxis)
+
+plt.bar(xAxis, searchesPerDay)
+
+#
+# Plot the number of searches per week
+#
+plt.subplot(numPlotsX,numPlotsY, currentPlot)
+currentPlot = currentPlot + 1
+
+totalNumOfWeeks = math.ceil(totalNumOfDays / 7)
+xAxis = numpy.linspace(firstSearch, lastSearch, totalNumOfWeeks)
+searchesPerWeek = list()
+for i in range(totalNumOfWeeks):
+    num = 0
+    for j in range(7):
+        num = num + searchesPerDay[i * 7 + j]
+    searchesPerWeek.append(num)
+
+plt.plot(xAxis, searchesPerWeek)
 
 #
 # Plot the average number of searches per day of the week
@@ -116,7 +133,13 @@ xAxis = [1,2,3,4,5,6,7]
 plt.bar(xAxis, yAxis)
 plt.xticks([1,2,3,4,5,6,7], ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
 
+
+
+# This command must come after the last plot has been created
 plt.draw()
+
+
+
 
 #
 # Top searched items
