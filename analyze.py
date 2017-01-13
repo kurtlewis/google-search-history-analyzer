@@ -116,24 +116,26 @@ xAxis = [1,2,3,4,5,6,7]
 plt.bar(xAxis, yAxis)
 plt.xticks([1,2,3,4,5,6,7], ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
 
+plt.draw()
+
 #
 # Top searched items
 #
-# I should learn how to use tuples
-topSearches = ["Temp"]
-topSearchesNums = [0]
+topSearches = list()
+# add a temporary search for comparing
+topSearches.append(("Temporary", -1))
 for key in queries:
     numSearches = len(queries[key])
-    for i, num in enumerate(topSearchesNums):
-        if numSearches > num:
-            topSearches.insert(i, key)
-            topSearchesNums.insert(i, numSearches)
+    for i, search in enumerate(topSearches):
+        if numSearches > search[1]:
+            topSearches.insert(i, (key, numSearches))
             break
+        # There only needs to be a list of the top 100
         if i == 100:
             break
 
 for i, search in enumerate(topSearches):
-    print(str(i) + ":(" + str(topSearchesNums[i])+ ") " + search)
+    print(str(i + 1) + ":(" + str(search[1])+ ") " + search[0])
     if i == 100:
         break
 
