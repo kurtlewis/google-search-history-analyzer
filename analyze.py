@@ -11,25 +11,40 @@ import time
 from os import listdir
 from os.path import isfile, join
 
-#Configure arguments
+#
+# Define constants
+#
+CONVERSION_TO_SECS = 1000000
+CONVERSION_TO_DAYS = 86400 * CONVERSION_TO_SECS
+#
+# Define variables to be used program long
+#
+# Queries is a dictionary where each key is a specific search, and
+## each key returns a list of timestamps where that key was searched for
+queries = dict()
+# QueriesTimeStamps holds a list of every timestamp from every search
+queriesTimeStamps = list()
+# Number of plots
+numPlots = 2
+numPlotsX = 2
+numPlotsY = 1
+currentPlot = 1
+
+#
+# Configure arguments
+#
 parser = argparse.ArgumentParser(
     description="A Tool to examine a folder containing json data from google's takeout tool",
     epilog="If any plots are displayed, they must be closed before the program can complete")
 parser.add_argument("directory", type=str, 
     help="The name of the folder containing json dumps. Typically Takeout/Searches/")
-
 args = parser.parse_args()
 
 jsonFiles = [f for f in listdir(args.directory) if isfile(join(args.directory, f))]
 
-# queries is a dictionary where each key is a specific search, and
-# each key returns a list of timestamps where that key was searched for
-queries = dict()
-# queriesTimeStamps holds a list of every timestamp from every search
-queriesTimeStamps = list()
-
-
-
+#
+# Read data
+#
 for jsonFile in jsonFiles:
     with open(args.directory + jsonFile, 'r') as data_file:
         data = json.loads(data_file.read())
@@ -51,17 +66,18 @@ for jsonFile in jsonFiles:
                 queries[query_text] = timestamps
             queriesTimeStamps = queriesTimeStamps + timestamps
 
+#
 # Plot the time frequency of searching
-conversionToSecs = 1000000
-conversionToDays = 86400000000
+#
+plt.subplot(numPlotsX,numPlotsY, currentPlot)
+currentPlot = currentPlot + 1
+
 queriesTimeStamps.sort()
-queriesDays = [math.floor(int(timestamp)/conversionToDays) for timestamp in queriesTimeStamps]
+queriesDays = [math.floor(int(timestamp)/CONVERSION_TO_DAYS) for timestamp in queriesTimeStamps]
 firstSearch = int(min(queriesDays))
 lastSearch = int(max(queriesDays))
-totalNumOfDays = 0
 
-xAxis = numpy.linspace(firstSearch,
-    lastSearch, lastSearch-firstSearch)
+xAxis = numpy.linspace(firstSearch, lastSearch, lastSearch-firstSearch)
 
 
 yAxis = list()
@@ -76,27 +92,33 @@ for i in range(lastSearch - firstSearch):
             break
     yAxis.append(num)
 
-plt.subplot(2,2,1)
+
 totalNumOfDays = len(yAxis)
 plt.bar(xAxis, yAxis)
-#plt.show()
+
+#
+# Plot the average number of searches per day of the week
+#
+plt.subplot(numPlotsX, numPlotsY, currentPlot)
+currentPlot = currentPlot + 1
 
 searchesOnDays = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
 for stamp in queriesTimeStamps:
     day = time.strftime("%A", time.localtime(int(stamp)))
     searchesOnDays[day] = searchesOnDays[day] + 1
-xTicksLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
 weeksInDataSet = totalNumOfDays/7
 for day in searchesOnDays:
     searchesOnDays[day] = searchesOnDays[day] / weeksInDataSet
+
 yAxis = list(searchesOnDays.values())
 xAxis = [1,2,3,4,5,6,7]
-plt.subplot(2,2,2)
 plt.bar(xAxis, yAxis)
-plt.xticks([1,2,3,4,5,6,7], xTicksLabels)
-plt.draw()
+plt.xticks([1,2,3,4,5,6,7], ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
 
+#
 # Top searched items
+#
 # I should learn how to use tuples
 topSearches = ["Temp"]
 topSearchesNums = [0]
