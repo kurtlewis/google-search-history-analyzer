@@ -63,7 +63,7 @@ if args.searchesPerDay or args.searchesPerDayOfWeek:
     queriesDays = [math.floor(int(timestamp)/conversionToDays) for timestamp in queriesTimeStamps]
     firstSearch = int(min(queriesDays))
     lastSearch = int(max(queriesDays))
-
+    totalNumOfDays = 0
 
     if args.searchesPerDay:
         xAxis = numpy.linspace(firstSearch,
@@ -82,6 +82,7 @@ if args.searchesPerDay or args.searchesPerDayOfWeek:
                     break
             yAxis.append(num)
 
+        totalNumOfDays = len(yAxis)
         plt.bar(xAxis, yAxis)
         plt.show()
 
@@ -91,6 +92,9 @@ if args.searchesPerDay or args.searchesPerDayOfWeek:
             day = time.strftime("%A", time.localtime(int(stamp)))
             searchesOnDays[day] = searchesOnDays[day] + 1
         xTicksLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        weeksInDataSet = totalNumOfDays/7
+        for day in searchesOnDays:
+            searchesOnDays[day] = searchesOnDays[day] / weeksInDataSet
         yAxis = list(searchesOnDays.values())
         xAxis = [1,2,3,4,5,6,7]
         plt.bar(xAxis, yAxis)
