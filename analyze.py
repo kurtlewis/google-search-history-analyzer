@@ -7,6 +7,7 @@ import argparse
 import matplotlib.pyplot as plt
 import numpy
 import math
+import time
 from os import listdir
 from os.path import isfile, join
 
@@ -20,7 +21,8 @@ parser.add_argument("-f", "--frequentSearches", action="store_true",
     help="Display the most frequently made searches")
 parser.add_argument("-d", "--searchesPerDay", action="store_true",
     help="Display a graph of how many searches have been made per day")
-
+parser.add_argument("-w", "--searchesPerDayOfWeek", action="store_true",
+    help="Display average number of searches per day of the week")
 
 args = parser.parse_args()
 
@@ -54,31 +56,50 @@ for jsonFile in jsonFiles:
             queriesTimeStamps = queriesTimeStamps + timestamps
 
 # Plot the time frequency of searching
-if args.searchesPerDay:
+if args.searchesPerDay or args.searchesPerDayOfWeek:
     conversionToSecs = 1000000
     conversionToDays = 86400000000
     queriesTimeStamps.sort()
     queriesDays = [math.floor(int(timestamp)/conversionToDays) for timestamp in queriesTimeStamps]
     firstSearch = int(min(queriesDays))
     lastSearch = int(max(queriesDays))
-    xAxis = numpy.linspace(firstSearch,
-        lastSearch, lastSearch-firstSearch)
+    totalNumOfDays = 0
+
+    if args.searchesPerDay:
+        xAxis = numpy.linspace(firstSearch,
+            lastSearch, lastSearch-firstSearch)
 
 
-    yAxis = list()
-    last = 0
-    for i in range(lastSearch - firstSearch):
-        num = 0
-        for j in range(len(queriesDays) + 1 - last):
-            if (math.floor(queriesDays[j + last])/(firstSearch+i) == 1):
-                num = num + 1
-            else:
-                last = j + last
-                break
-        yAxis.append(num)
+        yAxis = list()
+        last = 0
+        for i in range(lastSearch - firstSearch):
+            num = 0
+            for j in range(len(queriesDays) + 1 - last):
+                if (math.floor(queriesDays[j + last])/(firstSearch+i) == 1):
+                    num = num + 1
+                else:
+                    last = j + last
+                    break
+            yAxis.append(num)
 
-    plt.bar(xAxis, yAxis)
-    plt.show()
+        totalNumOfDays = len(yAxis)
+        plt.bar(xAxis, yAxis)
+        plt.show()
+
+    if args.searchesPerDayOfWeek:
+        searchesOnDays = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
+        for stamp in queriesTimeStamps:
+            day = time.strftime("%A", time.localtime(int(stamp)))
+            searchesOnDays[day] = searchesOnDays[day] + 1
+        xTicksLabels = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        weeksInDataSet = totalNumOfDays/7
+        for day in searchesOnDays:
+            searchesOnDays[day] = searchesOnDays[day] / weeksInDataSet
+        yAxis = list(searchesOnDays.values())
+        xAxis = [1,2,3,4,5,6,7]
+        plt.bar(xAxis, yAxis)
+        plt.xticks([1,2,3,4,5,6,7], xTicksLabels)
+        plt.show()
 
 if args.frequentSearches:
     # Top searched items
