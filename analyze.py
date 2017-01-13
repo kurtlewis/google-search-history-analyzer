@@ -95,6 +95,7 @@ for i in range(totalNumOfDays):
 
 
 plt.bar(xAxis, searchesPerDay)
+plt.title("Searches Per Day")
 
 #
 # Plot the number of searches per week
@@ -112,6 +113,7 @@ for i in range(totalNumOfWeeks):
     searchesPerWeek.append(num)
 
 plt.plot(xAxis, searchesPerWeek)
+plt.title("Searches Per Week")
 
 #
 # Plot the average number of searches per day of the week
@@ -132,7 +134,7 @@ yAxis = list(searchesOnDays.values())
 xAxis = [1,2,3,4,5,6,7]
 plt.bar(xAxis, yAxis)
 plt.xticks([1,2,3,4,5,6,7], ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
-
+plt.title("Average Searches Per Day of the Week")
 
 
 # This command must come after the last plot has been created
