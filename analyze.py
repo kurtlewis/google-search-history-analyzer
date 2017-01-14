@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy
 import math
 import time
+import operator
 from os import listdir
 from os.path import isfile, join
 
@@ -146,6 +147,9 @@ plt.draw()
 #
 # Top searched items
 #
+print("********************************************************************************")
+print("                            Top Searched Queries")
+print("********************************************************************************")
 topSearches = list()
 # add a temporary search for comparing
 topSearches.append(("Temporary", -1))
@@ -162,6 +166,34 @@ for key in queries:
 for i, search in enumerate(topSearches):
     print(str(i + 1) + ":(" + str(search[1])+ ") " + search[0])
     if i == 100:
+        break
+
+#
+# Number of searches per word
+#
+print("\n\n\n")
+print("********************************************************************************")
+print("                            Top Searched Words")
+print("********************************************************************************")
+searchedWords = dict()
+for key in queries:
+    words = key.split(" ")
+    for word in words:
+        if word in searchedWords:
+            searchedWords[word] += 1
+        else:
+            searchedWords[word] = 1
+
+# This algorithm sorts the words in advancing order, so reverse it
+topSearchedWords = sorted(searchedWords.items(), key=operator.itemgetter(1))
+topSearchedWords.reverse()
+tableMax = 200
+if len(topSearchedWords) < 600:
+    tableMax = math.floor(len(topSearchedWords)/3) - 1
+
+for i in range(len(topSearchedWords)):
+    print("{:3d}:({:4d}) {:12}    {:3d}:({:4d}) {:12}    {:3d}:({:4d}) {:12}".format(i, topSearchedWords[i][1], topSearchedWords[i][0], i + tableMax, topSearchedWords[i+tableMax][1], topSearchedWords[i+tableMax][0], i + tableMax * 2, topSearchedWords[i + tableMax * 2][1], topSearchedWords[i+ tableMax * 2][0]))
+    if i > tableMax:
         break
 
 plt.show()
