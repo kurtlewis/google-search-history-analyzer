@@ -177,6 +177,7 @@ print("                            Top Searched Words")
 print("********************************************************************************")
 searchedWords = dict()
 for key in queries:
+    key = key.strip(',')
     words = key.split(" ")
     for word in words:
         if word in searchedWords:
