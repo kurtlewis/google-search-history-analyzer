@@ -187,8 +187,9 @@ for key in queries:
 # This algorithm sorts the words in advancing order, so reverse it
 topSearchedWords = sorted(searchedWords.items(), key=operator.itemgetter(1))
 topSearchedWords.reverse()
+#set max 
 tableMax = 200
-if len(topSearchedWords) < 600:
+if len(topSearchedWords) < tableMax * 3:
     tableMax = math.floor(len(topSearchedWords)/3) - 1
 
 for i in range(len(topSearchedWords)):
