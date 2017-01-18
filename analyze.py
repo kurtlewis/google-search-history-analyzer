@@ -16,7 +16,7 @@ from os.path import isfile, join
 # Define constants
 #
 CONVERSION_TO_SECS = 1000000
-CONVERSION_TO_DAYS = 86400 * CONVERSION_TO_SECS
+CONVERSION_TO_DAYS = 86400
 #
 # Define variables to be used program long
 #
@@ -74,14 +74,15 @@ plt.subplot(numPlotsX,numPlotsY, currentPlot)
 currentPlot = currentPlot + 1
 
 queriesTimeStamps.sort()
-queriesDays = [math.floor(int(timestamp)/CONVERSION_TO_DAYS) for timestamp in queriesTimeStamps]
+#queriesTimeStamps = [math.floor(int(timestamp)/CONVERSION_TO_SECS) for timestamp in queriesTimeStamps]
+queriesDays = [math.floor(int(timestamp)/(CONVERSION_TO_DAYS * CONVERSION_TO_SECS)) for timestamp in queriesTimeStamps]
 firstSearch = int(min(queriesDays))
 lastSearch = int(max(queriesDays))
 
 totalNumOfDays = lastSearch - firstSearch
 xAxis = numpy.linspace(firstSearch, lastSearch, totalNumOfDays)
+xLabels = list()  
 searchesPerDay = list()
-
 last = 0
 for i in range(totalNumOfDays):
     num = 0
@@ -92,10 +93,15 @@ for i in range(totalNumOfDays):
             last = j + last
             break
     searchesPerDay.append(num)
+    if i % 100 == 0:
+        xLabels.append(time.strftime("%Y/%m/%d", time.localtime(xAxis[i]*CONVERSION_TO_DAYS)))
+    else:
+        xLabels.append("")
 
 
 
 plt.bar(xAxis, searchesPerDay)
+plt.xticks(xAxis, xLabels)
 plt.title("Searches Per Day")
 
 #
@@ -107,13 +113,21 @@ currentPlot = currentPlot + 1
 totalNumOfWeeks = math.ceil(totalNumOfDays / 7)
 xAxis = numpy.linspace(firstSearch, lastSearch, totalNumOfWeeks-1)
 searchesPerWeek = list()
+xLabels = list()
 for i in range(totalNumOfWeeks-1):
     num = 0
     for j in range(7):
         num = num + searchesPerDay[i * 7 + j]
     searchesPerWeek.append(num)
+    if i % 8 == 0:
+        xLabels.append(time.strftime("%Y/%m", time.localtime(xAxis[i]*CONVERSION_TO_DAYS)))
+    else:
+        xLabels.append("")
+
+
 
 plt.plot(xAxis, searchesPerWeek)
+plt.xticks(xAxis, xLabels)
 plt.title("Searches Per Week")
 
 #
