@@ -105,9 +105,9 @@ plt.subplot(numPlotsX,numPlotsY, currentPlot)
 currentPlot = currentPlot + 1
 
 totalNumOfWeeks = math.ceil(totalNumOfDays / 7)
-xAxis = numpy.linspace(firstSearch, lastSearch, totalNumOfWeeks)
+xAxis = numpy.linspace(firstSearch, lastSearch, totalNumOfWeeks-1)
 searchesPerWeek = list()
-for i in range(totalNumOfWeeks):
+for i in range(totalNumOfWeeks-1):
     num = 0
     for j in range(7):
         num = num + searchesPerDay[i * 7 + j]
