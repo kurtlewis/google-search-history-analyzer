@@ -80,7 +80,7 @@ firstSearch = int(min(queriesDays))
 lastSearch = int(max(queriesDays))
 
 totalNumOfDays = lastSearch - firstSearch
-xAxis = numpy.linspace(firstSearch, lastSearch, totalNumOfDays)
+daysList = numpy.linspace(firstSearch, lastSearch, totalNumOfDays)
 xLabels = list()  
 searchesPerDay = list()
 last = 0
@@ -94,14 +94,14 @@ for i in range(totalNumOfDays):
             break
     searchesPerDay.append(num)
     if i % 100 == 0:
-        xLabels.append(time.strftime("%Y/%m/%d", time.localtime(xAxis[i]*CONVERSION_TO_DAYS)))
+        xLabels.append(time.strftime("%m/%d/%y", time.localtime(daysList[i]*CONVERSION_TO_DAYS)))
     else:
         xLabels.append("")
 
 
 
-plt.bar(xAxis, searchesPerDay)
-plt.xticks(xAxis, xLabels)
+plt.bar(daysList, searchesPerDay)
+plt.xticks(daysList, xLabels)
 plt.title("Searches Per Day")
 
 #
@@ -111,23 +111,29 @@ plt.subplot(numPlotsX,numPlotsY, currentPlot)
 currentPlot = currentPlot + 1
 
 totalNumOfWeeks = math.ceil(totalNumOfDays / 7)
-xAxis = numpy.linspace(firstSearch, lastSearch, totalNumOfWeeks-1)
+
 searchesPerWeek = list()
 xLabels = list()
-for i in range(totalNumOfWeeks-1):
-    num = 0
-    for j in range(7):
-        num = num + searchesPerDay[i * 7 + j]
-    searchesPerWeek.append(num)
+num = 0
+for i in range(totalNumOfDays):
+    if "Sunday" == time.strftime("%A", time.localtime(int(daysList[i]*CONVERSION_TO_DAYS))):
+        searchesPerWeek.append(num)
+        num = searchesPerDay[i]
+    else:
+        num = num + searchesPerDay[i]
+
+weeksList = numpy.linspace(firstSearch, lastSearch, len(searchesPerWeek))
+
+for i in range(len(weeksList)):
     if i % 8 == 0:
-        xLabels.append(time.strftime("%Y/%m", time.localtime(xAxis[i]*CONVERSION_TO_DAYS)))
+        xLabels.append(time.strftime("%m/%y", time.localtime(weeksList[i]*CONVERSION_TO_DAYS)))
     else:
         xLabels.append("")
 
 
 
-plt.plot(xAxis, searchesPerWeek)
-plt.xticks(xAxis, xLabels)
+plt.plot(weeksList, searchesPerWeek)
+plt.xticks(weeksList, xLabels)
 plt.title("Searches Per Week")
 
 #
