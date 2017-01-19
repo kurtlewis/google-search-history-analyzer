@@ -26,9 +26,9 @@ queries = dict()
 # QueriesTimeStamps holds a list of every timestamp from every search
 queriesTimeStamps = list()
 # Number of plots
-numPlots = 3
+numPlots = 4
 numPlotsX = 3
-numPlotsY = 1
+numPlotsY = 2
 currentPlot = 1
 
 #
@@ -93,7 +93,7 @@ for i in range(totalNumOfDays):
             last = j + last
             break
     searchesPerDay.append(num)
-    if i % 100 == 0:
+    if i % 160 == 0:
         xLabels.append(time.strftime("%m/%d/%y", time.localtime(daysList[i]*CONVERSION_TO_DAYS)))
     else:
         xLabels.append("")
@@ -125,7 +125,7 @@ for i in range(totalNumOfDays):
 weeksList = numpy.linspace(firstSearch, lastSearch, len(searchesPerWeek))
 
 for i in range(len(weeksList)):
-    if i % 8 == 0:
+    if i % 16 == 0:
         xLabels.append(time.strftime("%m/%y", time.localtime(weeksList[i]*CONVERSION_TO_DAYS)))
     else:
         xLabels.append("")
@@ -135,6 +135,35 @@ for i in range(len(weeksList)):
 plt.plot(weeksList, searchesPerWeek)
 plt.xticks(weeksList, xLabels)
 plt.title("Searches Per Week")
+
+#
+# Plot the average number of searches per month
+#
+plt.subplot(numPlotsX,numPlotsY, currentPlot)
+currentPlot = currentPlot + 1
+
+
+searchesPerMonth = list()
+xLabels = list()
+num = 0
+for i in range(len(weeksList)):
+    if 7 >= int(time.strftime("%d", time.localtime(int(weeksList[i]*CONVERSION_TO_DAYS)))):
+        searchesPerMonth.append(num)
+        num = searchesPerWeek[i]
+    else:
+        num = num + searchesPerWeek[i]
+
+monthsList = numpy.linspace(firstSearch, lastSearch, len(searchesPerMonth))
+
+for i in range(len(monthsList)):
+    if i % 3 == 0:
+        xLabels.append(time.strftime("%m/%y", time.localtime(monthsList[i]*CONVERSION_TO_DAYS)))
+    else:
+        xLabels.append("")
+
+plt.plot(monthsList, searchesPerMonth)
+plt.xticks(monthsList, xLabels)
+plt.title("Searches Per Month")
 
 #
 # Plot the average number of searches per day of the week
