@@ -27,8 +27,8 @@ queries = dict()
 queriesTimeStamps = list()
 # Number of plots
 numPlots = 4
-numPlotsX = 3
-numPlotsY = 2
+numPlotsRows = 2
+numPlotsColumns = 3
 currentPlot = 1
 
 #
@@ -70,7 +70,7 @@ for jsonFile in jsonFiles:
 #
 # Plot the time frequency of searching in searches per day
 #
-plt.subplot(numPlotsX,numPlotsY, currentPlot)
+plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 queriesTimeStamps.sort()
@@ -107,7 +107,7 @@ plt.title("Searches Per Day")
 #
 # Plot the number of searches per week
 #
-plt.subplot(numPlotsX,numPlotsY, currentPlot)
+plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 totalNumOfWeeks = math.ceil(totalNumOfDays / 7)
@@ -139,7 +139,7 @@ plt.title("Searches Per Week")
 #
 # Plot the average number of searches per month
 #
-plt.subplot(numPlotsX,numPlotsY, currentPlot)
+plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 
@@ -168,7 +168,7 @@ plt.title("Searches Per Month")
 #
 # Plot the average number of searches per day of the week
 #
-plt.subplot(numPlotsX, numPlotsY, currentPlot)
+plt.subplot(numPlotsRows, numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 searchesOnDays = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
