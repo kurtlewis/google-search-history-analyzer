@@ -146,10 +146,12 @@ currentPlot = currentPlot + 1
 searchesPerMonth = list()
 xLabels = list()
 num = 0
+month = int(time.strftime("%m", time.localtime(int(weeksList[0]*CONVERSION_TO_DAYS))))
 for i in range(len(weeksList)):
-    if 7 >= int(time.strftime("%d", time.localtime(int(weeksList[i]*CONVERSION_TO_DAYS)))):
+    if month != int(time.strftime("%m", time.localtime(int(weeksList[i]*CONVERSION_TO_DAYS)))):
         searchesPerMonth.append(num)
         num = searchesPerWeek[i]
+        month = int(time.strftime("%m", time.localtime(int(weeksList[i]*CONVERSION_TO_DAYS))))
     else:
         num = num + searchesPerWeek[i]
 
@@ -164,6 +166,37 @@ for i in range(len(monthsList)):
 plt.plot(monthsList, searchesPerMonth)
 plt.xticks(monthsList, xLabels)
 plt.title("Searches Per Month")
+
+#
+# Plot the perecent of searches per month that occur during the workday
+#
+plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
+currentPlot = currentPlot + 1
+
+searchesDuringWorkday = list()
+totalNum = 0
+num = 0
+month = int(time.strftime("%m", time.localtime(int(queriesTimeStamps[0])/CONVERSION_TO_SECS)))
+for timestamp in queriesTimeStamps:
+    localTime = time.localtime(int(timestamp)/CONVERSION_TO_SECS)
+    if month != int(time.strftime("%m", localTime)):
+        searchesDuringWorkday.append(num/totalNum)
+        num = 0
+        totalNum = 0
+        month = int(time.strftime("%m", localTime))
+    weekday = int(time.strftime("%w", localTime))
+    if weekday != 0 and weekday != 6:
+        hour = int(time.strftime("%H", localTime))
+        if hour > 7 and hour < 16:
+            num += 1
+        totalNum += 1
+
+print(str(len(monthsList)) + " " +  str(len(searchesDuringWorkday)))
+
+plt.plot(monthsList, searchesDuringWorkday)
+plt.xticks(monthsList, xLabels)
+plt.title("Percent of Searches During Workday per Month")
+
 
 #
 # Plot the average number of searches per day of the week
