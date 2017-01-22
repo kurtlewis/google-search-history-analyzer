@@ -39,6 +39,8 @@ parser = argparse.ArgumentParser(
     epilog="If any plots are displayed, they must be closed before the program can complete")
 parser.add_argument("directory", type=str, 
     help="The name of the folder containing json dumps. Typically Takeout/Searches/")
+parser.add_argument("--figures", "-f", action="store_true",
+    help="Paints the plots as individual figures for easier analysis")
 args = parser.parse_args()
 
 jsonFiles = [f for f in listdir(args.directory) if isfile(join(args.directory, f))]
@@ -70,7 +72,10 @@ for jsonFile in jsonFiles:
 #
 # Plot the time frequency of searching in searches per day
 #
-plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
+if args.figures:
+    plt.figure(currentPlot)
+else:
+    plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 queriesTimeStamps.sort()
@@ -107,7 +112,10 @@ plt.title("Searches Per Day")
 #
 # Plot the number of searches per week
 #
-plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
+if args.figures:
+    plt.figure(currentPlot)
+else:
+    plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 totalNumOfWeeks = math.ceil(totalNumOfDays / 7)
@@ -139,7 +147,10 @@ plt.title("Searches Per Week")
 #
 # Plot the average number of searches per month
 #
-plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
+if args.figures:
+    plt.figure(currentPlot)
+else:
+    plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 
@@ -168,9 +179,12 @@ plt.xticks(monthsList, xLabels)
 plt.title("Searches Per Month")
 
 #
-# Plot the perecent of searches per month that occur during the workday
+# Plot the perecent of searches per month that occur during the workday on weekdays
 #
-plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
+if args.figures:
+    plt.figure(currentPlot)
+else:
+    plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 searchesDuringWorkday = list()
@@ -201,7 +215,10 @@ plt.title("Percent of Searches During Workday per Month")
 #
 # Plot the average number of searches per day of the week
 #
-plt.subplot(numPlotsRows, numPlotsColumns, currentPlot)
+if args.figures:
+    plt.figure(currentPlot)
+else:
+    plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
 currentPlot = currentPlot + 1
 
 searchesOnDays = {"Monday": 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
@@ -222,8 +239,6 @@ plt.title("Average Searches Per Day of the Week")
 
 # This command must come after the last plot has been created
 plt.draw()
-
-
 
 
 #
