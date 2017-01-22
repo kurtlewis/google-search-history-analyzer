@@ -3,7 +3,8 @@ I wrote a quick script to look at different details of Google search histroy
 
 # How to use
 1. Download your google search history from [google takeout](https://takeout.google.com/settings/takeout).
-2. Run the script, giving it the directory of the folder containing your google search .json dumps
+2. If you don't have [matplotlib](http://matplotlib.org/users/installing.html) install it.
+3. Run the script with python3, giving it the directory of the folder containing your google search .json dumps. Use `-f` to draw plots on their own figures.
 
 # Dependencies
 Current dependencies include:
