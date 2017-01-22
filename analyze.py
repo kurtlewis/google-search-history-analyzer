@@ -26,7 +26,7 @@ queries = dict()
 # QueriesTimeStamps holds a list of every timestamp from every search
 queriesTimeStamps = list()
 # Number of plots
-numPlots = 4
+numPlots = 6
 numPlotsRows = 2
 numPlotsColumns = 3
 currentPlot = 1
@@ -208,8 +208,28 @@ for timestamp in queriesTimeStamps:
 print(str(len(monthsList)) + " " +  str(len(searchesDuringWorkday)))
 
 plt.plot(monthsList, searchesDuringWorkday)
+plt.plot(monthsList, searchesPerMonth)
 plt.xticks(monthsList, xLabels)
 plt.title("Percent of Searches During Workday per Month")
+
+#
+# Plot the perecent of searches per month that occur during the workday on weekdays with the number of searches per month
+#
+if args.figures:
+    plt.figure(currentPlot)
+else:
+    plt.subplot(numPlotsRows,numPlotsColumns, currentPlot)
+currentPlot = currentPlot + 1
+
+plt.plot(monthsList, searchesDuringWorkday)
+plt.ylabel("Percent of searches during workday", color='b')
+plt.yticks(color='b')
+plt.twinx()
+plt.plot(monthsList, searchesPerMonth, 'r')
+plt.ylabel("Number of Searches Per Month", color='r')
+plt.yticks(color='r')
+plt.xticks(monthsList, xLabels)
+plt.title("Percent of Searches During Workday vs Average Searches Per Month")
 
 
 #
