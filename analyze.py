@@ -123,10 +123,12 @@ totalNumOfWeeks = math.ceil(totalNumOfDays / 7)
 searchesPerWeek = list()
 xLabels = list()
 num = 0
+week = int(time.strftime("%U", time.localtime(int(daysList[0]*CONVERSION_TO_DAYS))))
 for i in range(totalNumOfDays):
-    if "Sunday" == time.strftime("%A", time.localtime(int(daysList[i]*CONVERSION_TO_DAYS))):
+    if week != int(time.strftime("%U", time.localtime(int(daysList[i]*CONVERSION_TO_DAYS)))):
         searchesPerWeek.append(num)
         num = searchesPerDay[i]
+        week = int(time.strftime("%U", time.localtime(int(daysList[i]*CONVERSION_TO_DAYS))))
     else:
         num = num + searchesPerDay[i]
 
