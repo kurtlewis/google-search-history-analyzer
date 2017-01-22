@@ -299,6 +299,7 @@ for key in queries:
     key = key.strip(',')
     words = key.split(" ")
     for word in words:
+        word = word.lower()
         if word in searchedWords:
             searchedWords[word] += 1
         else:
